@@ -1,0 +1,53 @@
+:root {
+  /* Stitch Design Tokens */
+  --bg-deep-navy: #0b1326;
+  --surface-container-lowest: #060e20;
+  --surface-container-low: #131b2e;
+  --surface-container: #171f33;
+  --surface-container-high: #222a3d;
+  --surface-container-highest: #2d3449;
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #b4c5ff;
+  --color-primary-fixed: #dbe1ff;
+
+  --text-on-surface: #dae2fd;
+  --text-on-surface-variant: #c3c6d7;
+  --color-outline: #8d90a0;
+  --color-outline-variant: #434655;
+
+  /* Risk Semantic Colors */
+  --risk-high-bg: rgba(147, 0, 10, 0.25);
+  --risk-high-border: #ff897d;
+  --risk-high-text: #ffb4ab;
+
+  --risk-dangerous-bg: rgba(188, 72, 0, 0.25);
+  --risk-dangerous-border: #ffb596;
+  --risk-dangerous-text: #ffb596;
+
+  --risk-low-bg: rgba(27, 94, 32, 0.25);
+  --risk-low-border: #81c784;
+  --risk-low-text: #81c784;
+
+  --risk-insufficient-bg: rgba(13, 71, 161, 0.25);
+  --risk-insufficient-border: #90caf9;
+  --risk-insufficient-text: #90caf9;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --touch-target-min: 48px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Font */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
