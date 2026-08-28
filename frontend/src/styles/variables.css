@@ -1,53 +1,71 @@
 :root {
-  /* Stitch Design Tokens */
-  --bg-deep-navy: #0b1326;
-  --surface-container-lowest: #060e20;
-  --surface-container-low: #131b2e;
-  --surface-container: #171f33;
-  --surface-container-high: #222a3d;
-  --surface-container-highest: #2d3449;
+  /* TrustVision Color Palette: Deep Navy, Slate, Cobalt Blue */
+  --bg-deep-navy: #070d1e;
+  --bg-subtle: #0b1426;
+  --surface-container-lowest: #0a1122;
+  --surface-container-low: #0f192e;
+  --surface-container: #142038;
+  --surface-container-high: #1c2b4a;
+  --surface-container-highest: #26385e;
+  --surface-glass: rgba(20, 32, 56, 0.75);
 
+  /* Primary Brand Accents */
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
-  --color-primary-light: #b4c5ff;
-  --color-primary-fixed: #dbe1ff;
+  --color-primary-light: #60a5fa;
+  --color-primary-glow: rgba(37, 99, 235, 0.35);
+  --color-primary-subtle: rgba(37, 99, 235, 0.12);
 
-  --text-on-surface: #dae2fd;
-  --text-on-surface-variant: #c3c6d7;
-  --color-outline: #8d90a0;
-  --color-outline-variant: #434655;
+  /* Typography Colors */
+  --text-on-surface: #f8fafc;
+  --text-on-surface-variant: #cbd5e1;
+  --text-muted: #94a3b8;
+  --color-outline: rgba(255, 255, 255, 0.12);
+  --color-outline-focus: #3b82f6;
 
-  /* Risk Semantic Colors */
-  --risk-high-bg: rgba(147, 0, 10, 0.25);
-  --risk-high-border: #ff897d;
-  --risk-high-text: #ffb4ab;
+  /* Plain Visual Language: Semantic Risk Colors */
+  --risk-safe-bg: rgba(16, 185, 129, 0.15);
+  --risk-safe-border: #10b981;
+  --risk-safe-text: #34d399;
 
-  --risk-dangerous-bg: rgba(188, 72, 0, 0.25);
-  --risk-dangerous-border: #ffb596;
-  --risk-dangerous-text: #ffb596;
+  --risk-careful-bg: rgba(245, 158, 11, 0.15);
+  --risk-careful-border: #f59e0b;
+  --risk-careful-text: #fbbf24;
 
-  --risk-low-bg: rgba(27, 94, 32, 0.25);
-  --risk-low-border: #81c784;
-  --risk-low-text: #81c784;
+  --risk-suspicious-bg: rgba(249, 115, 22, 0.15);
+  --risk-suspicious-border: #f97316;
+  --risk-suspicious-text: #fb923c;
 
-  --risk-insufficient-bg: rgba(13, 71, 161, 0.25);
-  --risk-insufficient-border: #90caf9;
-  --risk-insufficient-text: #90caf9;
+  --risk-high-bg: rgba(239, 68, 68, 0.16);
+  --risk-high-border: #ef4444;
+  --risk-high-text: #f87171;
 
-  /* Spacing */
+  --risk-insufficient-bg: rgba(59, 130, 246, 0.15);
+  --risk-insufficient-border: #60a5fa;
+  --risk-insufficient-text: #93c5fd;
+
+  /* Spacing & Sizes */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
+  --spacing-2xl: 48px;
   --touch-target-min: 48px;
 
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  /* Border Radii */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
   --radius-pill: 9999px;
 
-  /* Font */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 24px rgba(37, 99, 235, 0.25);
+
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }

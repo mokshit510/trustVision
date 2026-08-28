@@ -1,5 +1,21 @@
-const API_BASE =
-  import.meta.env.VITE_API_URL || '/api';
+/**
+ * Resolves and normalizes the backend API base endpoint
+ */
+function getApiBaseUrl() {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl || envUrl.trim() === '') {
+    return '/api';
+  }
+
+  const cleanUrl = envUrl.trim().replace(/\/+$/, '');
+  // If user passed origin e.g. "https://trustvision-backend.onrender.com" or "http://localhost:5000", append /api
+  if (!cleanUrl.endsWith('/api')) {
+    return `${cleanUrl}/api`;
+  }
+  return cleanUrl;
+}
+
+const API_BASE = getApiBaseUrl();
 
 export async function analyzeText(text, context) {
   const response = await fetch(`${API_BASE}/analyze/text`, {

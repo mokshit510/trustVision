@@ -10,6 +10,11 @@ const upload = multer({
 
 export const router = Router();
 
+// Health check
+router.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'TrustVision AI Safety API', timestamp: new Date().toISOString() });
+});
+
 // API Endpoints as specified in requirements:
 // POST /api/analyze/text
 router.post('/analyze/text', analyzeTextHandler);
