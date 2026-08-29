@@ -394,8 +394,8 @@ export const CameraModal = ({
         {/* HEADER BAR */}
         <div className="modal-header-bar">
           <div className="modal-header-title" id="camera-modal-title">
-            <span style={{ fontSize: '18px' }}>
-              {mode === 'camera' ? '📸' : mode === 'qr' ? '🔍' : '📷'}
+            <span style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-light)' }}>
+              {mode === 'camera' ? <Camera size={20} /> : mode === 'qr' ? <QrCode size={20} /> : <Camera size={20} />}
             </span>
             <span>
               {mode === 'camera'
@@ -633,7 +633,7 @@ export const CameraModal = ({
                         style={{ flex: 1 }}
                       >
                         <Copy size={16} />
-                        <span>{copied ? '✓ Copied' : 'Copy Content'}</span>
+                        <span>{copied ? 'Copied' : 'Copy Content'}</span>
                       </button>
 
                       <button

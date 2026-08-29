@@ -38,14 +38,14 @@ export const AnalysisResultModal = ({ result, onClose }) => {
       case 'high_risk':
         return {
           badgeClass: 'high_risk',
-          label: '🔴 HIGH RISK',
+          label: 'HIGH RISK',
           title: 'This appears very dangerous',
           icon: <ShieldAlert size={24} />
         };
       case 'potentially_dangerous':
         return {
           badgeClass: 'potentially_dangerous',
-          label: '🟠 SUSPICIOUS',
+          label: 'SUSPICIOUS',
           title: 'Exercise high caution',
           icon: <AlertTriangle size={24} />
         };
@@ -53,7 +53,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
       case 'safe':
         return {
           badgeClass: 'safe',
-          label: '🟢 LOOKS SAFE',
+          label: 'LOOKS SAFE',
           title: 'No obvious scam signs detected',
           icon: <ShieldCheck size={24} />
         };
@@ -61,7 +61,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
       default:
         return {
           badgeClass: 'insufficient_evidence',
-          label: '🔵 NOT ENOUGH INFO',
+          label: 'NOT ENOUGH INFO',
           title: 'Could not determine risk safely',
           icon: <ShieldQuestion size={24} />
         };
@@ -90,7 +90,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
         {/* HEADER */}
         <div className="modal-header-bar">
           <div className="modal-header-title">
-            <span style={{ fontSize: '18px' }}>🛡️</span>
+            <ShieldCheck size={20} style={{ color: 'var(--color-primary-light)' }} />
             <span>Safety Report</span>
           </div>
 
@@ -120,7 +120,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
           {result.signals && result.signals.length > 0 && (
             <div className="report-card">
               <div className="report-card-heading" style={{ color: isDangerous ? '#f87171' : 'var(--color-primary-light)' }}>
-                <span>⚠️</span>
+                <AlertTriangle size={16} />
                 <span>WHY? (WARNING SIGNS DETECTED)</span>
               </div>
 
@@ -138,7 +138,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
           {/* 4. WHAT SHOULD YOU DO? */}
           <div className="report-card" style={{ borderColor: isDangerous ? 'rgba(239, 68, 68, 0.4)' : 'rgba(16, 185, 129, 0.4)' }}>
             <div className="report-card-heading" style={{ color: isDangerous ? '#f87171' : '#34d399' }}>
-              <span>🛑</span>
+              <ShieldAlert size={16} />
               <span>WHAT SHOULD YOU DO?</span>
             </div>
 
@@ -150,7 +150,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
           {/* 5. HOW TO VERIFY SAFELY */}
           <div className="report-card">
             <div className="report-card-heading" style={{ color: '#93c5fd' }}>
-              <span>🔍</span>
+              <Lock size={16} />
               <span>VERIFY SAFELY</span>
             </div>
 
@@ -163,7 +163,7 @@ export const AnalysisResultModal = ({ result, onClose }) => {
           {result.evidence && result.evidence.length > 0 && (
             <div className="report-card" style={{ padding: '12px 14px' }}>
               <div className="report-card-heading" style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
-                <span>📋</span>
+                <Info size={15} />
                 <span>ADDITIONAL DETAILS</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>

@@ -223,7 +223,7 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('text'); }}
         >
-          <div className="choice-tab-icon">💬</div>
+          <div className="choice-tab-icon"><MessageSquare size={20} /></div>
           <span className="choice-tab-title">Check a Message</span>
           <span className="choice-tab-desc">Paste an SMS, email, or chat</span>
         </div>
@@ -237,7 +237,7 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('image'); }}
         >
-          <div className="choice-tab-icon">🖼️</div>
+          <div className="choice-tab-icon"><ImageIcon size={20} /></div>
           <span className="choice-tab-title">Check a Screenshot</span>
           <span className="choice-tab-desc">Upload or snap a photo</span>
         </div>
@@ -251,7 +251,7 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('voice'); }}
         >
-          <div className="choice-tab-icon">🎙️</div>
+          <div className="choice-tab-icon"><Mic size={20} /></div>
           <span className="choice-tab-title">Check a Voice Note</span>
           <span className="choice-tab-desc">Record or upload a call</span>
         </div>
@@ -325,7 +325,7 @@ export const ScanInputSection = ({
               </div>
             ) : (
               <div className="image-input-container">
-                {/* 📷 SCAN / TAKE PHOTO BUTTON */}
+                {/* SCAN / TAKE PHOTO BUTTON */}
                 <button
                   type="button"
                   className="btn-camera-trigger"
@@ -336,7 +336,7 @@ export const ScanInputSection = ({
                       <Camera size={22} />
                     </div>
                     <div className="camera-trigger-text">
-                      <span className="camera-trigger-main">📷 Scan / Take Photo</span>
+                      <span className="camera-trigger-main">Scan / Take Photo</span>
                       <span className="camera-trigger-sub">Use camera to capture photo or scan QR code</span>
                     </div>
                   </div>
@@ -412,7 +412,7 @@ export const ScanInputSection = ({
                     <Square size={28} />
                   </button>
                   <div className="recording-status-text">
-                    <span>🔴 Recording: {formatTimer(recordingSeconds)}</span>
+                    <span>Recording: {formatTimer(recordingSeconds)}</span>
                   </div>
                   <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>
                     Tap the red button when finished speaking
@@ -431,7 +431,7 @@ export const ScanInputSection = ({
                   </button>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <span style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
-                      {audioBlob ? '✓ Voice Note Recorded' : 'Tap to Record Voice Note'}
+                      {audioBlob ? 'Voice Note Recorded' : 'Tap to Record Voice Note'}
                     </span>
                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       {audioBlob ? 'Ready to check for scam signs' : 'Speak or play the suspicious call'}
