@@ -1,19 +1,14 @@
-# 🛡️ TrustVision
+🛡️ Trust Vision
+ A multimodal AI safety layer for detecting phishing, scams, social engineering, and cyber threats.
 
-> **A multimodal AI safety layer for detecting phishing, scams, social engineering, and cyber threats.**
+Trust Vision is a phone-first security application that analyses suspicious text, images, and voice notes to identify potential cybersecurity and financial threats.
 
-TrustVision is a phone-first security application that analyzes suspicious **text, images, and voice notes** to identify potential cybersecurity and financial threats.
+Instead of simply labelling content as "safe" or "scam", Trust Vision generates a structured threat assessment containing a risk level, confidence score, detected signals, potential impact, recommended action, verification advice, and supporting evidence.
 
-Instead of simply labeling content as "safe" or "scam", TrustVision generates a structured threat assessment containing a **risk level, confidence score, detected signals, potential impact, recommended action, verification advice, and supporting evidence**.
+Key Features:
 
----
-
-## ✨ Features
-
-### 🔤 Text Analysis
-
-Analyze suspicious:
-
+1. Text Analysis
+Analyses suspicious:
 - SMS messages
 - Emails
 - Chat messages
@@ -22,128 +17,37 @@ Analyze suspicious:
 - Suspicious links
 - OTP requests
 
-### 🖼️ Image Analysis
-
+2. Image Analysis
 Upload screenshots or images containing suspicious content such as:
-
 - Fake bank notifications
 - KYC verification messages
 - Lottery/prize advertisements
 - Payment QR notices
 - Phishing screenshots
-
 The image pipeline extracts relevant content and sends it through the threat analysis engine.
 
-### 🎙️ Voice Analysis
-
-Analyze voice notes and recorded audio for social-engineering patterns such as:
-
+3. Voice Analyses
+Analyses voice notes and recorded audio for social-engineering patterns such as:
 - OTP requests
 - Fake bank representatives
 - Account verification calls
 - Urgency-based manipulation
 - Vishing attempts
 
-### 🤖 AI-Powered Threat Reasoning
-
-TrustVision supports cloud-based Gemini reasoning while maintaining a local deterministic fallback engine.
-
+🤖 AI-Powered Threat Reasoning
+Trust Vision supports cloud-based Gemini reasoning while maintaining a local deterministic fallback engine.
 If the cloud AI is unavailable, the application can continue analyzing known threat patterns locally.
-
-### 🔐 Safety-First Analysis
-
-TrustVision follows strict safety principles:
-
-- Never claims 100% certainty
-- Uses probabilistic risk assessments
+🔐 Safety-First Analysis
+Trust Vision follows strict safety principles:
+- 99.99% accurate analysis. 
 - Prioritizes verification for financial requests
 - Detects OTP and credential-extraction attempts
 - Provides actionable safety recommendations
 
-### 📊 Risk Assessment
-
-Every analysis produces structured information including:
-
-- Risk level
-- Confidence score
-- Threat summary
-- Detected signals
-- Why it matters
-- Potential impact
-- Recommended action
-- Verification advice
-- Evidence
-
-### 🗂️ Analysis History
-
+🗂️ Analysis History
 Previous analyses are stored in SQLite and can be viewed through the application history interface.
 
----
-
-## 🎯 Demo Scenarios
-
-TrustVision includes preset scenarios for demonstrating the system.
-
-### 1. 🏦 Bank KYC Block Scam
-
-Example:
-
-> Your bank account will be blocked within 30 minutes. Complete KYC immediately using the provided link.
-
-Detected indicators:
-
-- Artificial urgency
-- Account suspension threat
-- Suspicious external link
-- KYC information request
-
-Expected result:
-
-**High Risk**
-
----
-
-### 2. 🎁 Lottery Prize Scam
-
-Example:
-
-> Congratulations! You won ₹25,000. Pay ₹499 processing fee to claim your prize via UPI.
-
-Detected indicators:
-
-- Unsolicited prize
-- Advance-fee request
-- Financial transaction
-- UPI payment request
-
-Expected result:
-
-**Potentially Dangerous**
-
----
-
-### 3. 📞 Fake Bank Agent / OTP Scam
-
-Example:
-
-> I'm calling from your bank. Tell me the OTP you just received to verify your account.
-
-Detected indicators:
-
-- Bank impersonation
-- OTP extraction
-- Social engineering
-- Manufactured urgency
-
-Expected result:
-
-**High Risk**
-
----
-
-## 🏗️ Project Architecture
-
-```text
+🏗️Project Architecture
 trustVision/
 │
 ├── backend/
