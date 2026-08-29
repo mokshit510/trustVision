@@ -340,7 +340,6 @@ export const ScanInputSection = ({
                       <span className="camera-trigger-sub">Use camera to capture photo or scan QR code</span>
                     </div>
                   </div>
-                  <div className="camera-trigger-badge">New</div>
                 </button>
 
                 <div className="upload-divider">
