@@ -305,7 +305,7 @@ HTML_PAGE = """<!DOCTYPE html>
     <main class="app-main" id="mainView">
       <!-- Quick Demo Scenarios -->
       <div class="card">
-        <div class="card-title">✨ Quick Demo Scenarios</div>
+        <div class="card-title">Quick Demo Scenarios</div>
         <div style="display:flex; flex-direction:column; gap:8px;">
           <button class="preset-chip" onclick="fillPreset('text')">
             <div>
@@ -350,7 +350,7 @@ HTML_PAGE = """<!DOCTYPE html>
 
       <!-- Recent Scans History -->
       <div class="card">
-        <div class="card-title">📜 Recent Safety Scans</div>
+        <div class="card-title">Recent Safety Scans</div>
         <div id="historyContainer" style="display:flex; flex-direction:column; gap:8px;">
           <span style="font-size:12px; color:var(--text-muted);">No scans run yet. Try a demo scenario above!</span>
         </div>
@@ -374,12 +374,12 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
 
       <div class="card">
-        <div class="card-title">⚠ What We Noticed</div>
+        <div class="card-title">What We Noticed</div>
         <ul id="modalSignals" style="font-size:13px; color:var(--text-on-surface); padding-left:16px;"></ul>
       </div>
 
       <div class="card">
-        <div class="card-title">🔒 Why It Matters</div>
+        <div class="card-title">Why It Matters</div>
         <p id="modalWhy" style="font-size:13px; color:var(--text-muted);"></p>
       </div>
 
@@ -394,7 +394,7 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
 
       <div class="card">
-        <div class="card-title">🛡 Safe Verification Advice</div>
+        <div class="card-title">Safe Verification Advice</div>
         <p id="modalVerification" style="font-size:13px; color:var(--text-muted);"></p>
       </div>
 
