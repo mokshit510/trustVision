@@ -1,50 +1,54 @@
 :root {
-  /* TrustVision Color Palette: Deep Navy, Slate, Cobalt Blue */
-  --bg-deep-navy: #070d1e;
-  --bg-subtle: #0b1426;
-  --surface-container-lowest: #0a1122;
-  --surface-container-low: #0f192e;
-  --surface-container: #142038;
-  --surface-container-high: #1c2b4a;
-  --surface-container-highest: #26385e;
-  --surface-glass: rgba(20, 32, 56, 0.75);
+  /* Trust Vision — Black + Charcoal + Grey + White Color System */
+  --bg-canvas: #050505;
+  --surface-primary: #0a0a0a;
+  --surface-secondary: #111111;
+  --surface-card: #161616;
+  --surface-elevated: #1c1c1c;
+  --surface-highlight: #242424;
+  --surface-glass: rgba(16, 16, 16, 0.85);
 
-  /* Primary Brand Accents */
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-light: #60a5fa;
-  --color-primary-glow: rgba(37, 99, 235, 0.35);
-  --color-primary-subtle: rgba(37, 99, 235, 0.12);
+  /* Borders & Dividers */
+  --border-default: #282828;
+  --border-subtle: #202020;
+  --border-active: #404040;
+  --border-hover: #484848;
 
   /* Typography Colors */
-  --text-on-surface: #f8fafc;
-  --text-on-surface-variant: #cbd5e1;
-  --text-muted: #94a3b8;
-  --color-outline: rgba(255, 255, 255, 0.12);
-  --color-outline-focus: #3b82f6;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0a0;
+  --text-muted: #666666;
+  --text-inverse: #050505;
 
-  /* Categorical Threat Level Colors: Safe (Green), Suspicious (Yellow), High Risk (Orange), Critical (Red) */
-  --risk-safe-bg: rgba(16, 185, 129, 0.15);
-  --risk-safe-border: #10b981;
-  --risk-safe-text: #34d399;
+  /* Brand Accents (Monochrome Silver & Crisp Charcoal) */
+  --brand-white: #ffffff;
+  --brand-silver: #e5e5e5;
+  --brand-accent: #2c2c2c;
+  --brand-accent-hover: #383838;
+  --brand-glow: rgba(255, 255, 255, 0.08);
 
-  --risk-suspicious-bg: rgba(234, 179, 8, 0.15);
-  --risk-suspicious-border: #eab308;
-  --risk-suspicious-text: #facc15;
+  /* Categorical Threat Severity Colors (Restrained) */
+  --threat-safe: #10b981;
+  --threat-safe-bg: rgba(16, 185, 129, 0.12);
+  --threat-safe-border: rgba(16, 185, 129, 0.35);
 
-  --risk-high-bg: rgba(249, 115, 22, 0.15);
-  --risk-high-border: #f97316;
-  --risk-high-text: #fb923c;
+  --threat-suspicious: #eab308;
+  --threat-suspicious-bg: rgba(234, 179, 8, 0.12);
+  --threat-suspicious-border: rgba(234, 179, 8, 0.35);
 
-  --risk-critical-bg: rgba(239, 68, 68, 0.16);
-  --risk-critical-border: #ef4444;
-  --risk-critical-text: #f87171;
+  --threat-high: #f97316;
+  --threat-high-bg: rgba(249, 115, 22, 0.12);
+  --threat-high-border: rgba(249, 115, 22, 0.35);
 
-  --risk-insufficient-bg: rgba(59, 130, 246, 0.15);
-  --risk-insufficient-border: #60a5fa;
-  --risk-insufficient-text: #93c5fd;
+  --threat-critical: #ef4444;
+  --threat-critical-bg: rgba(239, 68, 68, 0.14);
+  --threat-critical-border: rgba(239, 68, 68, 0.4);
 
-  /* Spacing & Sizes */
+  --threat-neutral: #60a5fa;
+  --threat-neutral-bg: rgba(96, 165, 250, 0.12);
+  --threat-neutral-border: rgba(96, 165, 250, 0.35);
+
+  /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -54,17 +58,18 @@
   --touch-target-min: 48px;
 
   /* Border Radii */
+  --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 24px rgba(37, 99, 235, 0.25);
+  /* Shadows (Subtle, Deep) */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.75);
+  --shadow-subtle-glow: 0 0 30px rgba(255, 255, 255, 0.04);
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

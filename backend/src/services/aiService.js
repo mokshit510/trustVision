@@ -98,13 +98,13 @@ export class AIService {
     if (textToAnalyze.includes('otp') || textToAnalyze.includes('one-time password') || (textToAnalyze.includes('calling from') && textToAnalyze.includes('bank')) || textToAnalyze.includes('unauthorized login')) {
       return {
         modality,
-        riskLevel: 'high_risk',
+        riskLevel: 'critical',
         confidence: 0.94,
         summary: 'Voice vishing attempt impersonating bank security to extract OTP.',
         signals: [
           'Caller impersonates official bank security personnel over phone call',
           'Direct verbal request to share 6-digit One-Time Password (OTP)',
-          'Manufactured crisis regarding an alleged "unauthorized lhttps://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=ogin attempt"'
+          'Manufactured crisis regarding an alleged unauthorized login attempt'
         ],
         whyItMatters: 'Bank employees are strictly prohibited from asking customers for OTPs, PINs, or password details over the phone.',
         potentialImpact: 'Sharing an OTP authorizes immediate fraudulent fund transfers or device registration on your bank account.',
@@ -120,6 +120,65 @@ export class AIService {
             category: 'financial',
             title: 'OTP Extraction Signal',
             detail: 'Direct request for temporary authentication token.'
+          }
+        ],
+        extractedContent
+      };
+    }
+
+    // Check Demo 4: Counterfeit Parking Payment QR
+    if (textToAnalyze.includes('parking') || textToAnalyze.includes('meter') || textToAnalyze.includes('quick-pay-parking')) {
+      return {
+        modality,
+        riskLevel: 'high_risk',
+        confidence: 0.91,
+        summary: 'Counterfeit payment QR code targeting physical parking meters.',
+        signals: [
+          'Unverified external payment portal masquerading as municipal parking authority',
+          'Malicious overlay sticker QR code placed over physical meter',
+          'Requests direct online payment to untrusted gateway'
+        ],
+        whyItMatters: 'Physical QR stickers pasted over parking meters are commonly used by attackers to divert parking payments to malicious accounts.',
+        potentialImpact: 'Loss of payment amount and compromise of entered payment card details.',
+        recommendedAction: 'Do not pay using the scanned link. Use the official municipal parking app or physical coin/card terminal.',
+        verificationAdvice: 'Inspect physical meters for sticker tampering. Always verify domain name matches the official city authority.',
+        evidence: [
+          {
+            category: 'threat_vector',
+            title: 'QR Code Quishing Vector',
+            detail: 'Directs user to unofficial parking payment gateway.'
+          },
+          {
+            category: 'financial',
+            title: 'Payment Diversion',
+            detail: 'Intercepts municipal parking fees into fraudulent wallet.'
+          }
+        ],
+        extractedContent
+      };
+    }
+
+    // Check Demo 5: Suspicious Delivery Fee SMS
+    if (textToAnalyze.includes('parcel') || textToAnalyze.includes('delivery') || textToAnalyze.includes('redelivery') || textToAnalyze.includes('indiapost')) {
+      return {
+        modality,
+        riskLevel: 'high_risk',
+        confidence: 0.88,
+        summary: 'Smishing scam impersonating postal/courier service to harvest credentials.',
+        signals: [
+          'Unsolicited package delivery issue notification',
+          'Demands small redelivery fee via untrusted third-party domain',
+          'Harvests postal address and credit card payment information'
+        ],
+        whyItMatters: 'Postal carriers and courier companies do not require payment via unsolicited SMS links to correct address info.',
+        potentialImpact: 'Recurring fraudulent credit card charges and identity theft.',
+        recommendedAction: 'Do not click the tracking link or pay any fee.',
+        verificationAdvice: 'Check your original purchase invoice and enter tracking number directly on the merchant\'s verified tracking website.',
+        evidence: [
+          {
+            category: 'threat_vector',
+            title: 'Package Delivery Smishing',
+            detail: 'Spoofs postal service to extract credit card data.'
           }
         ],
         extractedContent

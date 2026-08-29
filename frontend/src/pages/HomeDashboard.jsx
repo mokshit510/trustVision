@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { analyzeText, analyzeImage, analyzeVoice, getAnalyses } from '../services/api.js';
 import { Navbar } from '../components/Navbar.jsx';
 import { DemoPresets } from '../components/DemoPresets.jsx';
@@ -7,13 +7,13 @@ import { AnalysisResultModal } from '../components/AnalysisResultModal.jsx';
 import { HistoryList } from '../components/HistoryList.jsx';
 import { HowItWorks } from '../components/HowItWorks.jsx';
 import { AboutSection } from '../components/AboutSection.jsx';
-import { Home, History, Info, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
+import { Home, History, Info, ShieldCheck, AlertCircle, Plus, ArrowRight } from 'lucide-react';
 
 const LOADING_PHRASES = [
-  'Checking for warning signs...',
-  'Looking for suspicious requests...',
-  'Checking for urgency and pressure...',
-  'Preparing your safety report...'
+  'Inspecting content...',
+  'Checking threat indicators...',
+  'Evaluating suspicious patterns...',
+  'Preparing safety guidance...'
 ];
 
 export const HomeDashboard = () => {
@@ -27,14 +27,14 @@ export const HomeDashboard = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [lastAction, setLastAction] = useState(null);
 
-  // Cycling loading phrases
+  // Cycling multi-step loading phrases
   useEffect(() => {
     let interval = null;
     if (isLoading) {
       setLoadingPhraseIndex(0);
       interval = setInterval(() => {
         setLoadingPhraseIndex((prev) => (prev + 1) % LOADING_PHRASES.length);
-      }, 1400);
+      }, 1200);
     } else {
       setLoadingPhraseIndex(0);
     }
@@ -78,7 +78,7 @@ export const HomeDashboard = () => {
       loadHistory();
     } catch (err) {
       console.error(err);
-      setErrorMessage("We couldn't check this message right now. Please check your connection and try again.");
+      setErrorMessage("Analysis unavailable. Cloud analysis could not be completed. Please check your connection or retry.");
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +94,7 @@ export const HomeDashboard = () => {
       loadHistory();
     } catch (err) {
       console.error(err);
-      setErrorMessage("We couldn't check this screenshot right now. Please check your connection and try again.");
+      setErrorMessage("Image inspection failed. Please verify the image file format and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +110,7 @@ export const HomeDashboard = () => {
       loadHistory();
     } catch (err) {
       console.error(err);
-      setErrorMessage("We couldn't check this voice note right now. Please check your connection and try again.");
+      setErrorMessage("Voice analysis could not be completed. You can type or paste the conversation instead.");
     } finally {
       setIsLoading(false);
     }
@@ -124,139 +124,174 @@ export const HomeDashboard = () => {
     }
   };
 
-  return (
-    <div className="app-container">
-      {/* NAVBAR */}
-      <Navbar onLogoClick={() => setActiveNav('home')} />
+  const handleStartNewAnalysis = () => {
+    setActiveNav('home');
+    setSelectedPreset(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-      {/* MAIN CONTENT AREA */}
-      <main className="app-main">
-        {/* FRIENDLY ERROR STATE */}
-        {errorMessage && (
-          <div className="error-banner">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <AlertCircle size={20} style={{ flexShrink: 0 }} />
-              <span>{errorMessage}</span>
+  return (
+    <>
+      {/* AMBIENT DYNAMIC BACKGROUND */}
+      <div className="app-ambient-bg">
+        <div className="ambient-orb ambient-orb-1" />
+        <div className="ambient-orb-2" />
+      </div>
+
+      <div className="app-container">
+        {/* TOP BRAND HEADER */}
+        <Navbar
+          activeNav={activeNav}
+          onNavSelect={(nav) => {
+            setActiveNav(nav);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onLogoClick={handleStartNewAnalysis}
+        />
+
+        {/* MAIN CONTENT AREA */}
+        <main className="app-main">
+          {/* CALM ERROR STATE */}
+          {errorMessage && (
+            <div className="error-banner">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <AlertCircle size={18} style={{ color: '#ef4444', flexShrink: 0 }} />
+                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{errorMessage}</span>
+              </div>
+              <button className="error-retry-btn" onClick={handleRetry}>
+                Try Again
+              </button>
             </div>
-            <button className="error-retry-btn" onClick={handleRetry}>
-              Try Again
-            </button>
+          )}
+
+          {/* TAB 1: DASHBOARD VIEW */}
+          {activeNav === 'home' && (
+            <>
+              {/* HERO SECTION */}
+              <div className="hero-card">
+                <div className="hero-pill">
+                  <ShieldCheck size={13} />
+                  <span>AI Security Platform</span>
+                </div>
+                <h1 className="hero-headline">Analyze before you trust.</h1>
+                <p className="hero-subtext">
+                  Check suspicious messages, images, QR codes, and voice notes before taking action.
+                </p>
+
+                <div className="hero-cta-row">
+                  <button className="btn-primary" style={{ width: 'auto' }} onClick={() => window.scrollTo({ top: 220, behavior: 'smooth' })}>
+                    <Plus size={16} />
+                    <span>New Analysis</span>
+                  </button>
+                  {historyItems.length > 0 && (
+                    <button className="btn-ghost" onClick={() => setActiveNav('history')}>
+                      <span>Recent Activity ({historyItems.length})</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* PRIMARY SCANNER WORKSPACE */}
+              <ScanInputSection
+                onAnalyzeText={handleAnalyzeText}
+                onAnalyzeImage={handleAnalyzeImage}
+                onAnalyzeVoice={handleAnalyzeVoice}
+                isLoading={isLoading}
+                selectedPreset={selectedPreset}
+                activeTab={activeInputTab}
+                onTabChange={(tab) => setActiveInputTab(tab)}
+              />
+
+              {/* DEMO SECURITY SCENARIOS */}
+              <DemoPresets onSelectPreset={handleSelectPreset} />
+
+              {/* HOW IT WORKS */}
+              <HowItWorks />
+
+              {/* RECENT ACTIVITY PREVIEW (IF ANY) */}
+              {historyItems.length > 0 && (
+                <HistoryList
+                  analyses={historyItems.slice(0, 3)}
+                  onSelectAnalysis={(item) => setActiveAnalysis(item)}
+                  onStartScan={handleStartNewAnalysis}
+                />
+              )}
+            </>
+          )}
+
+          {/* TAB 2: FULL ACTIVITY LOG */}
+          {activeNav === 'history' && (
+            <HistoryList
+              analyses={historyItems}
+              onSelectAnalysis={(item) => setActiveAnalysis(item)}
+              onStartScan={handleStartNewAnalysis}
+            />
+          )}
+
+          {/* TAB 3: SECURITY GUIDE / ABOUT */}
+          {activeNav === 'about' && (
+            <AboutSection onStartScan={handleStartNewAnalysis} />
+          )}
+        </main>
+
+        {/* SOPHISTICATED MULTI-STEP ANALYSIS LOADING OVERLAY */}
+        {isLoading && (
+          <div className="loading-fullscreen" role="alert" aria-busy="true">
+            <div className="loading-radar-ring">
+              <ShieldCheck size={28} color="#ffffff" />
+            </div>
+            <div>
+              <div className="loading-title-pill">ANALYZING THREAT VECTORS</div>
+              <div className="loading-phase-text">
+                {LOADING_PHRASES[loadingPhraseIndex]}
+              </div>
+              <div className="loading-subtext" style={{ marginTop: '8px' }}>
+                Trust Vision is assessing intent, urgency manipulation, and threat markers
+              </div>
+            </div>
           </div>
         )}
 
-        {/* TAB 1: HOME VIEW */}
-        {activeNav === 'home' && (
-          <>
-            {/* HERO / FIRST SCREEN: 3-SECOND CLARITY */}
-            <div className="hero-card">
-              <div className="hero-pill">
-                <ShieldCheck size={14} />
-                <span>AI Safety Check</span>
-              </div>
-              <h1 className="hero-headline">Not sure if it's safe? Check it first.</h1>
-              <p className="hero-subtext">
-                Scan a message, screenshot, or voice note and get a simple safety report.
-              </p>
-            </div>
-
-            {/* THREE INPUT CHOICES & SCANNER WORKSPACE */}
-            <ScanInputSection
-              onAnalyzeText={handleAnalyzeText}
-              onAnalyzeImage={handleAnalyzeImage}
-              onAnalyzeVoice={handleAnalyzeVoice}
-              isLoading={isLoading}
-              selectedPreset={selectedPreset}
-              activeTab={activeInputTab}
-              onTabChange={(tab) => setActiveInputTab(tab)}
-            />
-
-            {/* DEMO SCENARIOS */}
-            <DemoPresets onSelectPreset={handleSelectPreset} />
-
-            {/* HOW IT WORKS */}
-            <HowItWorks />
-
-            {/* RECENT SCANS SNIPPET */}
-            {historyItems.length > 0 && (
-              <HistoryList
-                analyses={historyItems.slice(0, 3)}
-                onSelectAnalysis={(item) => setActiveAnalysis(item)}
-                onStartScan={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              />
-            )}
-          </>
-        )}
-
-        {/* TAB 2: FULL HISTORY VIEW */}
-        {activeNav === 'history' && (
-          <HistoryList
-            analyses={historyItems}
-            onSelectAnalysis={(item) => setActiveAnalysis(item)}
-            onStartScan={() => setActiveNav('home')}
+        {/* THREAT ASSESSMENT REPORT MODAL */}
+        {activeAnalysis && (
+          <AnalysisResultModal
+            result={activeAnalysis}
+            onClose={() => setActiveAnalysis(null)}
           />
         )}
 
-        {/* TAB 3: ABOUT / SAFETY GUIDE */}
-        {activeNav === 'about' && (
-          <AboutSection onStartScan={() => setActiveNav('home')} />
-        )}
-      </main>
+        {/* MOBILE BOTTOM NAVIGATION */}
+        <nav className="bottom-nav-bar" aria-label="Mobile Navigation">
+          <button
+            className={`nav-item-btn ${activeNav === 'home' ? 'active' : ''}`}
+            onClick={() => { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            aria-label="Home Dashboard"
+          >
+            <Home className="nav-icon-indicator" size={20} />
+            <span>Dashboard</span>
+          </button>
 
-      {/* REASSURING LOADING OVERLAY */}
-      {isLoading && (
-        <div className="loading-fullscreen" role="alert" aria-busy="true">
-          <div className="loading-shield-pulse">
-            <ShieldCheck size={40} color="#60a5fa" />
-          </div>
-          <div>
-            <div className="loading-phase-text">
-              {LOADING_PHRASES[loadingPhraseIndex]}
-            </div>
-            <div className="loading-subtext" style={{ marginTop: '6px' }}>
-              TrustVision is evaluating the safety of your input
-            </div>
-          </div>
-        </div>
-      )}
+          <button
+            className={`nav-item-btn ${activeNav === 'history' ? 'active' : ''}`}
+            onClick={() => { setActiveNav('history'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            aria-label="Activity Log"
+          >
+            <History className="nav-icon-indicator" size={20} />
+            <span>Activity</span>
+          </button>
 
-      {/* SAFETY REPORT MODAL */}
-      {activeAnalysis && (
-        <AnalysisResultModal
-          result={activeAnalysis}
-          onClose={() => setActiveAnalysis(null)}
-        />
-      )}
-
-      {/* FOOTER TAB NAVIGATION */}
-      <nav className="bottom-nav-bar" aria-label="Main Navigation">
-        <button
-          className={`nav-item-btn ${activeNav === 'home' ? 'active' : ''}`}
-          onClick={() => { setActiveNav('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          aria-label="Home safety scanner"
-        >
-          <Home className="nav-icon-indicator" size={20} />
-          <span>Home</span>
-        </button>
-
-        <button
-          className={`nav-item-btn ${activeNav === 'history' ? 'active' : ''}`}
-          onClick={() => { setActiveNav('history'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          aria-label="Scan history"
-        >
-          <History className="nav-icon-indicator" size={20} />
-          <span>History</span>
-        </button>
-
-        <button
-          className={`nav-item-btn ${activeNav === 'about' ? 'active' : ''}`}
-          onClick={() => { setActiveNav('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          aria-label="Safety tips and about"
-        >
-          <Info className="nav-icon-indicator" size={20} />
-          <span>About</span>
-        </button>
-      </nav>
-    </div>
+          <button
+            className={`nav-item-btn ${activeNav === 'about' ? 'active' : ''}`}
+            onClick={() => { setActiveNav('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            aria-label="Security Guide"
+          >
+            <Info className="nav-icon-indicator" size={20} />
+            <span>Guide</span>
+          </button>
+        </nav>
+      </div>
+    </>
   );
 };
 

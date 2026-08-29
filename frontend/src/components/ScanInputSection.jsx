@@ -5,14 +5,15 @@ import {
   Mic,
   Upload,
   Square,
-  Sparkles,
   ShieldCheck,
   X,
   FileAudio,
   CheckCircle2,
   AlertCircle,
   Camera,
-  QrCode
+  QrCode,
+  ArrowRight,
+  RotateCcw
 } from 'lucide-react';
 import { CameraModal } from './CameraModal.jsx';
 
@@ -30,7 +31,7 @@ export const ScanInputSection = ({
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  // Camera and QR Scanner modal state
+  // Camera & QR Scanner modal state
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [cameraInitialMode, setCameraInitialMode] = useState('select');
 
@@ -118,12 +119,10 @@ export const ScanInputSection = ({
   };
 
   const handleQrDetected = (qrData) => {
-    // QR code detected
     console.log('QR Code detected:', qrData);
   };
 
   const handleCheckQrText = (qrText) => {
-    // Populate text and trigger analysis
     setActiveTab('text');
     setInputText(qrText);
     if (onTabChange) onTabChange('text');
@@ -152,13 +151,13 @@ export const ScanInputSection = ({
       mediaRecorder.start();
       setIsRecording(true);
       setRecordingSeconds(0);
-      setSelectedFile(null);
 
       timerRef.current = setInterval(() => {
         setRecordingSeconds((prev) => prev + 1);
       }, 1000);
     } catch (err) {
-      alert('Microphone access was denied or is not supported. You can upload an audio file directly below.');
+      console.error('Mic permission denied or error:', err);
+      alert('Could not access microphone. Please check your browser microphone permissions.');
     }
   };
 
@@ -166,166 +165,132 @@ export const ScanInputSection = ({
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
     }
   };
 
-  const formatTimer = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  const handleTextSubmit = (e) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+    onAnalyzeText(inputText);
   };
 
-  const handleCheckAction = () => {
-    if (isLoading) return;
+  const handleImageSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedFile) return;
+    onAnalyzeImage(selectedFile, inputText);
+  };
 
-    if (activeTab === 'text') {
-      if (!inputText.trim()) {
-        alert('Please paste or type the suspicious message you want to check.');
-        return;
-      }
+  const handleVoiceSubmit = (e) => {
+    e.preventDefault();
+    if (audioBlob) {
+      const audioFile = new File([audioBlob], 'voicenote.webm', { type: 'audio/webm' });
+      onAnalyzeVoice(audioFile, inputText);
+    } else if (selectedFile) {
+      onAnalyzeVoice(selectedFile, inputText);
+    } else if (inputText.trim()) {
       onAnalyzeText(inputText);
-    } else if (activeTab === 'image') {
-      if (selectedFile) {
-        onAnalyzeImage(selectedFile, inputText);
-      } else if (inputText) {
-        onAnalyzeImage(undefined, inputText);
-      } else {
-        alert('Please take a photo or upload a screenshot to check.');
-      }
-    } else if (activeTab === 'voice') {
-      if (audioBlob) {
-        const file = new File([audioBlob], 'voice-recording.webm', { type: 'audio/webm' });
-        onAnalyzeVoice(file, inputText);
-      } else if (selectedFile) {
-        onAnalyzeVoice(selectedFile, inputText);
-      } else if (inputText) {
-        onAnalyzeVoice(undefined, inputText);
-      } else {
-        alert('Please record a voice note or choose an audio file to check.');
-      }
     }
   };
 
   return (
-    <div className="input-choices-container">
-      {/* 3 LARGE OBVIOUS INPUT CHOICES */}
-      <div className="choice-tabs-grid" role="tablist" aria-label="Input type selector">
-        {/* OPTION 1: MESSAGE */}
-        <div
+    <section className="input-choices-container" aria-label="Threat Analysis Workspace">
+      <div className="section-title-wrap">
+        <h3 className="section-title">
+          <span>Choose Analysis Mode</span>
+        </h3>
+        <span className="section-subtitle">Select input format</span>
+      </div>
+
+      {/* THREE CHOICES GRID */}
+      <div className="choice-tabs-grid" role="tablist">
+        <button
           className={`choice-tab-card ${activeTab === 'text' ? 'active' : ''}`}
           onClick={() => handleTabSelect('text')}
           role="tab"
           aria-selected={activeTab === 'text'}
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('text'); }}
         >
-          <div className="choice-tab-icon"><MessageSquare size={20} /></div>
-          <span className="choice-tab-title">Check a Message</span>
-          <span className="choice-tab-desc">Paste an SMS, email, or chat</span>
-        </div>
+          <div className="choice-tab-icon">
+            <MessageSquare size={18} />
+          </div>
+          <span className="choice-tab-title">Message</span>
+          <span className="choice-tab-desc">SMS & text</span>
+        </button>
 
-        {/* OPTION 2: SCREENSHOT */}
-        <div
+        <button
           className={`choice-tab-card ${activeTab === 'image' ? 'active' : ''}`}
           onClick={() => handleTabSelect('image')}
           role="tab"
           aria-selected={activeTab === 'image'}
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('image'); }}
         >
-          <div className="choice-tab-icon"><ImageIcon size={20} /></div>
-          <span className="choice-tab-title">Check a Screenshot</span>
-          <span className="choice-tab-desc">Upload or snap a photo</span>
-        </div>
+          <div className="choice-tab-icon">
+            <ImageIcon size={18} />
+          </div>
+          <span className="choice-tab-title">Image / QR</span>
+          <span className="choice-tab-desc">Screenshots & bills</span>
+        </button>
 
-        {/* OPTION 3: VOICE NOTE */}
-        <div
+        <button
           className={`choice-tab-card ${activeTab === 'voice' ? 'active' : ''}`}
           onClick={() => handleTabSelect('voice')}
           role="tab"
           aria-selected={activeTab === 'voice'}
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('voice'); }}
         >
-          <div className="choice-tab-icon"><Mic size={20} /></div>
-          <span className="choice-tab-title">Check a Voice Note</span>
-          <span className="choice-tab-desc">Record or upload a call</span>
-        </div>
+          <div className="choice-tab-icon">
+            <Mic size={18} />
+          </div>
+          <span className="choice-tab-title">Voice Note</span>
+          <span className="choice-tab-desc">Calls & audio</span>
+        </button>
       </div>
 
       {/* ACTIVE SCANNER WORKSPACE */}
       <div className="active-scanner-box">
-        {/* MESSAGE SCANNER TAB */}
+        {/* 1. TEXT INPUT WORKSPACE */}
         {activeTab === 'text' && (
-          <>
+          <form onSubmit={handleTextSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div className="scanner-header-info">
-              <MessageSquare className="scanner-header-icon" size={20} />
+              <MessageSquare size={18} className="scanner-header-icon" />
               <div className="scanner-header-text">
-                <h3>Paste your message</h3>
-                <p>Paste any suspicious SMS, WhatsApp message, email, or payment link</p>
+                <h3>Suspicious Message or Link</h3>
+                <p>Paste an SMS, email, WhatsApp message, or payment notice</p>
               </div>
             </div>
 
             <textarea
               className="text-input-field"
-              placeholder="e.g. 'Your bank account will be blocked within 30 minutes! Click here to verify KYC...'"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              aria-label="Suspicious message text"
+              placeholder="e.g. 'Your bank account is suspended. Click here to verify your KYC details within 30 minutes...'"
               rows={4}
+              aria-label="Message content to analyze"
             />
 
             <button
+              type="submit"
               className="btn-primary"
-              onClick={handleCheckAction}
-              disabled={isLoading}
+              disabled={!inputText.trim() || isLoading}
             >
-              <ShieldCheck size={20} />
-              <span>Check this message</span>
+              <ShieldCheck size={18} />
+              <span>{isLoading ? 'Inspecting...' : 'Analyze Message'}</span>
             </button>
-          </>
+          </form>
         )}
 
-        {/* SCREENSHOT SCANNER TAB */}
+        {/* 2. IMAGE & SCREENSHOT WORKSPACE */}
         {activeTab === 'image' && (
-          <>
+          <form onSubmit={handleImageSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div className="scanner-header-info">
-              <ImageIcon className="scanner-header-icon" size={20} />
+              <ImageIcon size={18} className="scanner-header-icon" />
               <div className="scanner-header-text">
-                <h3>Upload or snap a screenshot</h3>
-                <p>Take a photo with your camera or upload a screenshot of a suspicious chat or app</p>
+                <h3>Screenshot, Bill or QR Code</h3>
+                <p>Upload a screenshot or capture a photo with your camera</p>
               </div>
             </div>
 
-            {previewUrl ? (
-              <div className="image-preview-wrapper">
-                <img src={previewUrl} alt="Screenshot to check" />
-                <div className="preview-action-overlay-bar">
-                  <button
-                    className="preview-secondary-btn"
-                    onClick={() => handleOpenScanner('camera')}
-                    title="Retake photo"
-                    type="button"
-                  >
-                    <Camera size={14} /> Retake Photo
-                  </button>
-                  <button
-                    className="preview-clear-btn"
-                    onClick={clearSelectedFile}
-                    title="Remove image"
-                    type="button"
-                  >
-                    <X size={14} /> Remove
-                  </button>
-                </div>
-              </div>
-            ) : (
+            {!previewUrl ? (
               <div className="image-input-container">
-                {/* SCAN / TAKE PHOTO BUTTON */}
+                {/* CAMERA QUICK TRIGGER */}
                 <button
                   type="button"
                   className="btn-camera-trigger"
@@ -333,21 +298,40 @@ export const ScanInputSection = ({
                 >
                   <div className="camera-trigger-content">
                     <div className="camera-trigger-icon-wrap">
-                      <Camera size={22} />
+                      <Camera size={18} />
                     </div>
                     <div className="camera-trigger-text">
                       <span className="camera-trigger-main">Scan / Take Photo</span>
-                      <span className="camera-trigger-sub">Use camera to capture photo or scan QR code</span>
+                      <span className="camera-trigger-sub">Use your camera to snap a screen or scan a QR code</span>
                     </div>
                   </div>
+                  <ArrowRight size={18} style={{ color: 'var(--text-muted)' }} />
                 </button>
 
                 <div className="upload-divider">
-                  <span>OR</span>
+                  <span>OR UPLOAD FILE</span>
                 </div>
 
-                {/* EXISTING FILE DROPZONE */}
-                <label className="file-dropzone" tabIndex={0}>
+                {/* DROPZONE */}
+                <div
+                  className="file-dropzone"
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current && fileInputRef.current.click(); }}
+                >
+                  <div className="dropzone-icon-circle">
+                    <Upload size={20} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '13.5px', fontWeight: 700, color: '#ffffff' }}>
+                      Choose an image or screenshot
+                    </h4>
+                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      PNG, JPG, or WEBP (up to 10MB)
+                    </p>
+                  </div>
+
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -355,134 +339,157 @@ export const ScanInputSection = ({
                     onChange={handleImageFileChange}
                     style={{ display: 'none' }}
                   />
-                  <div className="dropzone-icon-circle">
-                    <Upload size={24} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#ffffff', marginBottom: '2px' }}>
-                      Tap to upload screenshot from files
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                      Supports PNG, JPG, JPEG, WEBP photos
-                    </div>
-                  </div>
-                </label>
+                </div>
+              </div>
+            ) : (
+              /* PREVIEW SELECTED IMAGE */
+              <div className="image-preview-wrapper">
+                <div className="preview-action-overlay-bar">
+                  <button
+                    type="button"
+                    className="preview-secondary-btn"
+                    onClick={() => handleOpenScanner('camera')}
+                  >
+                    <RotateCcw size={13} />
+                    <span>Retake</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="preview-clear-btn"
+                    onClick={clearSelectedFile}
+                  >
+                    <X size={13} />
+                    <span>Remove</span>
+                  </button>
+                </div>
+
+                <img src={previewUrl} alt="Inspection preview" />
+
+                <div style={{ padding: '8px 12px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-secondary)' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '300px' }}>
+                    {selectedFile?.name || 'Captured photo'}
+                  </span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Ready for scan</span>
+                </div>
               </div>
             )}
 
-            {/* If preset text was loaded */}
-            {inputText && (
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', backgroundColor: 'var(--surface-container-lowest)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
-                <strong>Demo content attached: </strong> {inputText}
-              </div>
-            )}
+            {/* OPTIONAL CONTEXT */}
+            <input
+              type="text"
+              className="text-input-field"
+              style={{ minHeight: '44px', padding: '10px 14px', fontSize: '13px' }}
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Optional: Add any extra context about where you saw this"
+            />
 
             <button
+              type="submit"
               className="btn-primary"
-              onClick={handleCheckAction}
-              disabled={isLoading}
+              disabled={!selectedFile || isLoading}
             >
-              <ShieldCheck size={20} />
-              <span>Check this screenshot</span>
+              <ShieldCheck size={18} />
+              <span>{isLoading ? 'Inspecting Screenshot...' : 'Analyze Image'}</span>
             </button>
-          </>
+          </form>
         )}
 
-        {/* VOICE NOTE SCANNER TAB */}
+        {/* 3. VOICE NOTE WORKSPACE */}
         {activeTab === 'voice' && (
-          <>
+          <form onSubmit={handleVoiceSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div className="scanner-header-info">
-              <Mic className="scanner-header-icon" size={20} />
+              <Mic size={18} className="scanner-header-icon" />
               <div className="scanner-header-text">
-                <h3>Record or upload a call</h3>
-                <p>Record a suspicious caller or upload an audio note</p>
+                <h3>Suspicious Call or Voice Note</h3>
+                <p>Record a voice clip or upload an audio recording of a call</p>
               </div>
             </div>
 
             <div className="voice-recorder-card">
-              {isRecording ? (
-                <>
-                  <button
-                    type="button"
-                    className="mic-action-btn recording"
-                    onClick={stopRecording}
-                    title="Stop recording"
-                    aria-label="Stop recording"
-                  >
-                    <Square size={28} />
-                  </button>
-                  <div className="recording-status-text">
-                    <span>Recording: {formatTimer(recordingSeconds)}</span>
-                  </div>
-                  <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>
-                    Tap the red button when finished speaking
-                  </span>
-                </>
+              {!isRecording ? (
+                <button
+                  type="button"
+                  className="mic-action-btn"
+                  onClick={startRecording}
+                  aria-label="Start recording voice note"
+                >
+                  <Mic size={28} />
+                </button>
               ) : (
-                <>
+                <button
+                  type="button"
+                  className="mic-action-btn recording"
+                  onClick={stopRecording}
+                  aria-label="Stop recording"
+                >
+                  <Square size={24} />
+                </button>
+              )}
+
+              <div>
+                {isRecording ? (
+                  <div className="recording-status-text">
+                    Recording: {Math.floor(recordingSeconds / 60)}:{String(recordingSeconds % 60).padStart(2, '0')} (Tap to stop)
+                  </div>
+                ) : audioBlob ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399', fontSize: '13px', fontWeight: 600 }}>
+                    <CheckCircle2 size={16} />
+                    <span>Voice Note Ready ({Math.floor(recordingSeconds / 60)}:{String(recordingSeconds % 60).padStart(2, '0')})</span>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                    Tap microphone to record suspicious conversation
+                  </span>
+                )}
+              </div>
+
+              {/* OR UPLOAD AUDIO */}
+              {!audioBlob && (
+                <div style={{ marginTop: '8px' }}>
                   <button
                     type="button"
-                    className="mic-action-btn"
-                    onClick={startRecording}
-                    title="Start recording"
-                    aria-label="Start recording"
+                    className="btn-ghost"
+                    onClick={() => audioInputRef.current && audioInputRef.current.click()}
                   >
-                    <Mic size={30} />
+                    <FileAudio size={15} />
+                    <span>Upload Audio File</span>
                   </button>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
-                      {audioBlob ? 'Voice Note Recorded' : 'Tap to Record Voice Note'}
-                    </span>
-                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                      {audioBlob ? 'Ready to check for scam signs' : 'Speak or play the suspicious call'}
-                    </span>
-                  </div>
+                  <input
+                    ref={audioInputRef}
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioFileChange}
+                    style={{ display: 'none' }}
+                  />
+                </div>
+              )}
 
-                  <div className="audio-file-row">
-                    <label className="btn-secondary" style={{ cursor: 'pointer', width: 'auto', minHeight: '38px', fontSize: '13px' }}>
-                      <FileAudio size={16} />
-                      <span>{selectedFile ? `File: ${selectedFile.name.substring(0, 18)}...` : 'Or upload audio file'}</span>
-                      <input
-                        ref={audioInputRef}
-                        type="file"
-                        accept="audio/*"
-                        onChange={handleAudioFileChange}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
-
-                    {(audioBlob || selectedFile) && (
-                      <button
-                        type="button"
-                        className="btn-secondary"
-                        onClick={() => { setAudioBlob(null); clearSelectedFile(); }}
-                        style={{ width: 'auto', minHeight: '38px', padding: '0 12px' }}
-                        title="Clear audio"
-                      >
-                        <X size={15} />
-                      </button>
-                    )}
-                  </div>
-                </>
+              {selectedFile && !audioBlob && (
+                <div className="audio-file-row">
+                  <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>
+                    {selectedFile.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={clearSelectedFile}
+                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
               )}
             </div>
 
-            {/* If preset text was loaded */}
-            {inputText && (
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', backgroundColor: 'var(--surface-container-lowest)', padding: '8px 12px', borderRadius: 'var(--radius-sm)' }}>
-                <strong>Demo audio script: </strong> {inputText}
-              </div>
-            )}
-
             <button
+              type="submit"
               className="btn-primary"
-              onClick={handleCheckAction}
-              disabled={isLoading || isRecording}
+              disabled={(!audioBlob && !selectedFile && !inputText.trim()) || isLoading}
             >
-              <ShieldCheck size={20} />
-              <span>Check this voice note</span>
+              <ShieldCheck size={18} />
+              <span>{isLoading ? 'Analyzing Audio...' : 'Analyze Voice Note'}</span>
             </button>
-          </>
+          </form>
         )}
       </div>
 
@@ -495,7 +502,7 @@ export const ScanInputSection = ({
         onCheckQrText={handleCheckQrText}
         initialMode={cameraInitialMode}
       />
-    </div>
+    </section>
   );
 };
 
