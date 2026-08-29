@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldAlert, Gift, PhoneCall, AlertTriangle } from 'lucide-react';
 import { DEMO_PRESETS } from '../../../shared/src/constants.js';
 
 export const DemoPresets = ({ onSelectPreset }) => {
@@ -7,28 +7,28 @@ export const DemoPresets = ({ onSelectPreset }) => {
     switch (preset.id) {
       case 'demo-text-bank':
         return {
-          emoji: '🚨',
+          icon: <ShieldAlert size={18} />,
           name: 'Bank Message',
           preview: '"Your account will be blocked!"',
           tag: 'SMS Scam'
         };
       case 'demo-image-prize':
         return {
-          emoji: '🎁',
+          icon: <Gift size={18} />,
           name: 'Prize Scam',
           preview: '"You won ₹25,000!"',
           tag: 'Fake Prize'
         };
       case 'demo-voice-otp':
         return {
-          emoji: '📞',
+          icon: <PhoneCall size={18} />,
           name: 'Fake Bank Call',
           preview: '"Tell me your OTP right now"',
           tag: 'Call Scam'
         };
       default:
         return {
-          emoji: '⚠️',
+          icon: <AlertTriangle size={18} />,
           name: preset.title,
           preview: `"${preset.subtitle}"`,
           tag: preset.modality
@@ -60,7 +60,7 @@ export const DemoPresets = ({ onSelectPreset }) => {
               aria-label={`Try demo: ${meta.name}`}
             >
               <div className="demo-card-content">
-                <div className="demo-icon-badge">{meta.emoji}</div>
+                <div className="demo-icon-badge">{meta.icon}</div>
                 <div className="demo-text-meta">
                   <span className="demo-title">{meta.name}</span>
                   <span className="demo-quote">{meta.preview}</span>

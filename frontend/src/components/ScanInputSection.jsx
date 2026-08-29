@@ -10,8 +10,11 @@ import {
   X,
   FileAudio,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Camera,
+  QrCode
 } from 'lucide-react';
+import { CameraModal } from './CameraModal.jsx';
 
 export const ScanInputSection = ({
   onAnalyzeText,
@@ -26,6 +29,10 @@ export const ScanInputSection = ({
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Camera and QR Scanner modal state
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraInitialMode, setCameraInitialMode] = useState('select');
 
   // Audio recording state
   const [isRecording, setIsRecording] = useState(false);
@@ -89,9 +96,40 @@ export const ScanInputSection = ({
 
   const clearSelectedFile = () => {
     setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
     setPreviewUrl(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (audioInputRef.current) audioInputRef.current.value = '';
+  };
+
+  // Camera / QR modal handlers
+  const handleOpenScanner = (initialMode = 'select') => {
+    setCameraInitialMode(initialMode);
+    setIsCameraOpen(true);
+  };
+
+  const handlePhotoCaptured = (file, fileUrl) => {
+    setSelectedFile(file);
+    setPreviewUrl(fileUrl);
+    setActiveTab('image');
+    if (onTabChange) onTabChange('image');
+  };
+
+  const handleQrDetected = (qrData) => {
+    // QR code detected
+    console.log('QR Code detected:', qrData);
+  };
+
+  const handleCheckQrText = (qrText) => {
+    // Populate text and trigger analysis
+    setActiveTab('text');
+    setInputText(qrText);
+    if (onTabChange) onTabChange('text');
+    if (onAnalyzeText) {
+      onAnalyzeText(qrText);
+    }
   };
 
   const startRecording = async () => {
@@ -156,7 +194,7 @@ export const ScanInputSection = ({
       } else if (inputText) {
         onAnalyzeImage(undefined, inputText);
       } else {
-        alert('Please choose or upload a screenshot to check.');
+        alert('Please take a photo or upload a screenshot to check.');
       }
     } else if (activeTab === 'voice') {
       if (audioBlob) {
@@ -185,7 +223,7 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('text'); }}
         >
-          <div className="choice-tab-icon">💬</div>
+          <div className="choice-tab-icon"><MessageSquare size={20} /></div>
           <span className="choice-tab-title">Check a Message</span>
           <span className="choice-tab-desc">Paste an SMS, email, or chat</span>
         </div>
@@ -199,9 +237,9 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('image'); }}
         >
-          <div className="choice-tab-icon">🖼️</div>
+          <div className="choice-tab-icon"><ImageIcon size={20} /></div>
           <span className="choice-tab-title">Check a Screenshot</span>
-          <span className="choice-tab-desc">Upload a suspicious image</span>
+          <span className="choice-tab-desc">Upload or snap a photo</span>
         </div>
 
         {/* OPTION 3: VOICE NOTE */}
@@ -213,7 +251,7 @@ export const ScanInputSection = ({
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleTabSelect('voice'); }}
         >
-          <div className="choice-tab-icon">🎙️</div>
+          <div className="choice-tab-icon"><Mic size={20} /></div>
           <span className="choice-tab-title">Check a Voice Note</span>
           <span className="choice-tab-desc">Record or upload a call</span>
         </div>
@@ -258,44 +296,78 @@ export const ScanInputSection = ({
             <div className="scanner-header-info">
               <ImageIcon className="scanner-header-icon" size={20} />
               <div className="scanner-header-text">
-                <h3>Upload a screenshot</h3>
-                <p>Take a photo or upload a screenshot of a suspicious chat, payment app, or email</p>
+                <h3>Upload or snap a screenshot</h3>
+                <p>Take a photo with your camera or upload a screenshot of a suspicious chat or app</p>
               </div>
             </div>
 
             {previewUrl ? (
               <div className="image-preview-wrapper">
                 <img src={previewUrl} alt="Screenshot to check" />
-                <button
-                  className="preview-clear-btn"
-                  onClick={clearSelectedFile}
-                  title="Remove image"
-                  type="button"
-                >
-                  <X size={14} /> Remove Image
-                </button>
+                <div className="preview-action-overlay-bar">
+                  <button
+                    className="preview-secondary-btn"
+                    onClick={() => handleOpenScanner('camera')}
+                    title="Retake photo"
+                    type="button"
+                  >
+                    <Camera size={14} /> Retake Photo
+                  </button>
+                  <button
+                    className="preview-clear-btn"
+                    onClick={clearSelectedFile}
+                    title="Remove image"
+                    type="button"
+                  >
+                    <X size={14} /> Remove
+                  </button>
+                </div>
               </div>
             ) : (
-              <label className="file-dropzone" tabIndex={0}>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageFileChange}
-                  style={{ display: 'none' }}
-                />
-                <div className="dropzone-icon-circle">
-                  <Upload size={24} />
-                </div>
-                <div>
-                  <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#ffffff', marginBottom: '2px' }}>
-                    Tap to upload screenshot
+              <div className="image-input-container">
+                {/* SCAN / TAKE PHOTO BUTTON */}
+                <button
+                  type="button"
+                  className="btn-camera-trigger"
+                  onClick={() => handleOpenScanner('select')}
+                >
+                  <div className="camera-trigger-content">
+                    <div className="camera-trigger-icon-wrap">
+                      <Camera size={22} />
+                    </div>
+                    <div className="camera-trigger-text">
+                      <span className="camera-trigger-main">Scan / Take Photo</span>
+                      <span className="camera-trigger-sub">Use camera to capture photo or scan QR code</span>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                    Supports PNG, JPG, JPEG, WEBP photos
-                  </div>
+                </button>
+
+                <div className="upload-divider">
+                  <span>OR</span>
                 </div>
-              </label>
+
+                {/* EXISTING FILE DROPZONE */}
+                <label className="file-dropzone" tabIndex={0}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <div className="dropzone-icon-circle">
+                    <Upload size={24} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '14.5px', fontWeight: 700, color: '#ffffff', marginBottom: '2px' }}>
+                      Tap to upload screenshot from files
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                      Supports PNG, JPG, JPEG, WEBP photos
+                    </div>
+                  </div>
+                </label>
+              </div>
             )}
 
             {/* If preset text was loaded */}
@@ -340,7 +412,7 @@ export const ScanInputSection = ({
                     <Square size={28} />
                   </button>
                   <div className="recording-status-text">
-                    <span>🔴 Recording: {formatTimer(recordingSeconds)}</span>
+                    <span>Recording: {formatTimer(recordingSeconds)}</span>
                   </div>
                   <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>
                     Tap the red button when finished speaking
@@ -359,7 +431,7 @@ export const ScanInputSection = ({
                   </button>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <span style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
-                      {audioBlob ? '✓ Voice Note Recorded' : 'Tap to Record Voice Note'}
+                      {audioBlob ? 'Voice Note Recorded' : 'Tap to Record Voice Note'}
                     </span>
                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                       {audioBlob ? 'Ready to check for scam signs' : 'Speak or play the suspicious call'}
@@ -413,6 +485,18 @@ export const ScanInputSection = ({
           </>
         )}
       </div>
+
+      {/* CAMERA & QR SCANNER MODAL */}
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onPhotoCaptured={handlePhotoCaptured}
+        onQrDetected={handleQrDetected}
+        onCheckQrText={handleCheckQrText}
+        initialMode={cameraInitialMode}
+      />
     </div>
   );
 };
+
+export default ScanInputSection;

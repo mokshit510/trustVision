@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, ShieldAlert, ShieldCheck, AlertTriangle, ChevronRight, MessageSquare, Image, Mic } from 'lucide-react';
+import { History, ShieldAlert, ShieldCheck, AlertTriangle, ChevronRight, MessageSquare, Image, Mic, FileText } from 'lucide-react';
 
 export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) => {
   if (!analyses || analyses.length === 0) {
@@ -35,12 +35,12 @@ export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) =>
     }
   };
 
-  const getModalityEmoji = (modality) => {
+  const getModalityIcon = (modality) => {
     switch (modality) {
-      case 'text': return '💬';
-      case 'image': return '🖼️';
-      case 'voice': return '🎙️';
-      default: return '📄';
+      case 'text': return <MessageSquare size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />;
+      case 'image': return <Image size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />;
+      case 'voice': return <Mic size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />;
+      default: return <FileText size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />;
     }
   };
 
@@ -81,7 +81,9 @@ export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) =>
                   {item.summary ? (item.summary.length > 50 ? item.summary.substring(0, 50) + '...' : item.summary) : 'Safety Assessment'}
                 </span>
                 <span className="history-meta-sub">
-                  <span>{getModalityEmoji(item.modality)} {item.modality ? item.modality.toUpperCase() : 'SCAN'}</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    {getModalityIcon(item.modality)} {item.modality ? item.modality.toUpperCase() : 'SCAN'}
+                  </span>
                   <span>•</span>
                   <span style={{
                     fontWeight: 600,
