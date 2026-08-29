@@ -3,7 +3,7 @@
 
 Trust Vision is a phone-first security application that analyses suspicious text, images, and voice notes to identify potential cybersecurity and financial threats.
 
-Instead of simply labelling content as "safe" or "scam", Trust Vision generates a structured threat assessment containing a risk level, confidence score, detected signals, potential impact, recommended action, verification advice, and supporting evidence.
+Instead of relying on numerical risk scores, Trust Vision communicates threat severity through categorical threat levels (SAFE, SUSPICIOUS, HIGH RISK, CRITICAL) and structured evidence: detected signals, potential impact, recommended action, verification advice, supporting evidence, and reasons why it was flagged.
 
 Key Features:
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { History, ShieldAlert, ShieldCheck, AlertTriangle, ChevronRight, MessageSquare, Image, Mic, FileText } from 'lucide-react';
+import { History, ShieldAlert, ShieldCheck, AlertTriangle, ChevronRight, MessageSquare, Image, Mic, FileText, ShieldQuestion } from 'lucide-react';
 
 export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) => {
   if (!analyses || analyses.length === 0) {
@@ -21,17 +21,46 @@ export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) =>
     );
   }
 
-  const getRiskIcon = (level) => {
+  const getThreatCategory = (level) => {
     switch (level) {
+      case 'critical':
+        return {
+          icon: <ShieldAlert size={18} style={{ color: '#ef4444' }} />,
+          label: 'CRITICAL',
+          color: '#ef4444',
+          dot: '#ef4444'
+        };
       case 'high_risk':
-        return <ShieldAlert size={18} style={{ color: '#f87171' }} />;
+        return {
+          icon: <ShieldAlert size={18} style={{ color: '#f97316' }} />,
+          label: 'HIGH RISK',
+          color: '#f97316',
+          dot: '#f97316'
+        };
       case 'potentially_dangerous':
-        return <AlertTriangle size={18} style={{ color: '#fb923c' }} />;
+      case 'suspicious':
+        return {
+          icon: <AlertTriangle size={18} style={{ color: '#eab308' }} />,
+          label: 'SUSPICIOUS',
+          color: '#eab308',
+          dot: '#eab308'
+        };
       case 'low_risk':
       case 'safe':
-        return <ShieldCheck size={18} style={{ color: '#34d399' }} />;
+        return {
+          icon: <ShieldCheck size={18} style={{ color: '#10b981' }} />,
+          label: 'SAFE',
+          color: '#10b981',
+          dot: '#10b981'
+        };
+      case 'insufficient_evidence':
       default:
-        return <History size={18} style={{ color: '#93c5fd' }} />;
+        return {
+          icon: <ShieldQuestion size={18} style={{ color: '#60a5fa' }} />,
+          label: 'NOT ENOUGH INFO',
+          color: '#60a5fa',
+          dot: '#60a5fa'
+        };
     }
   };
 
@@ -44,63 +73,62 @@ export const HistoryList = ({ analyses = [], onSelectAnalysis, onStartScan }) =>
     }
   };
 
-  const getRiskLabel = (level) => {
-    switch (level) {
-      case 'high_risk': return 'High Risk';
-      case 'potentially_dangerous': return 'Suspicious';
-      case 'low_risk':
-      case 'safe': return 'Looks Safe';
-      default: return 'Checked';
-    }
-  };
-
   return (
     <div className="history-section-card">
       <div className="section-title-wrap">
         <h3 className="section-title">
           <History size={18} style={{ color: 'var(--color-primary-light)' }} />
-          <span>Recent Safety Checks ({analyses.length})</span>
+          <span>Recent Analyses ({analyses.length})</span>
         </h3>
-        <span className="section-subtitle">Tap to view full report</span>
+        <span className="section-subtitle">Tap to view full threat report</span>
       </div>
 
       <div className="history-items-list">
-        {analyses.map((item) => (
-          <div
-            key={item.id || Math.random()}
-            className="history-item-row"
-            onClick={() => onSelectAnalysis(item)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectAnalysis(item); }}
-          >
-            <div className="history-left-group">
-              <div>{getRiskIcon(item.riskLevel)}</div>
-              <div className="history-text-col">
-                <span className="history-summary">
-                  {item.summary ? (item.summary.length > 50 ? item.summary.substring(0, 50) + '...' : item.summary) : 'Safety Assessment'}
-                </span>
-                <span className="history-meta-sub">
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    {getModalityIcon(item.modality)} {item.modality ? item.modality.toUpperCase() : 'SCAN'}
+        {analyses.map((item) => {
+          const threat = getThreatCategory(item.riskLevel);
+          return (
+            <div
+              key={item.id || Math.random()}
+              className="history-item-row"
+              onClick={() => onSelectAnalysis(item)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectAnalysis(item); }}
+            >
+              <div className="history-left-group">
+                <div>{threat.icon}</div>
+                <div className="history-text-col">
+                  <span className="history-summary">
+                    {item.summary ? (item.summary.length > 50 ? item.summary.substring(0, 50) + '...' : item.summary) : 'Threat Assessment'}
                   </span>
-                  <span>•</span>
-                  <span style={{
-                    fontWeight: 600,
-                    color: item.riskLevel === 'high_risk' ? '#f87171' : (item.riskLevel === 'potentially_dangerous' ? '#fb923c' : '#34d399')
-                  }}>
-                    {getRiskLabel(item.riskLevel)}
+                  <span className="history-meta-sub">
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      {getModalityIcon(item.modality)} {item.modality ? item.modality.toUpperCase() : 'SCAN'}
+                    </span>
+                    <span>•</span>
+                    <span style={{
+                      fontWeight: 700,
+                      color: threat.color,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: threat.dot }} />
+                      {threat.label}
+                    </span>
+                    <span>•</span>
+                    <span>{item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}</span>
                   </span>
-                  <span>•</span>
-                  <span>{item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}</span>
-                </span>
+                </div>
               </div>
-            </div>
 
-            <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
-          </div>
-        ))}
+              <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
+
+export default HistoryList;

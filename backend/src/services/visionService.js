@@ -89,7 +89,7 @@ return safe or low_risk.
 Output MUST be valid JSON matching this schema exactly:
 
 {
-  "riskLevel": "safe" | "low_risk" | "potentially_dangerous" | "high_risk" | "insufficient_evidence",
+  "riskLevel": "safe" | "low_risk" | "suspicious" | "potentially_dangerous" | "high_risk" | "critical" | "insufficient_evidence",
   "confidence": number between 0.1 and 0.95,
   "summary": string,
   "signals": [string],

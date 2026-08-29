@@ -192,7 +192,7 @@ export class AIService {
 You are TrustVision AI Safety Layer. Analyze the user's input for cybersecurity, phishing, social engineering, vishing, or scam threats.
 Output MUST be a valid JSON object matching this schema exactly:
 {
-  "riskLevel": "safe" | "low_risk" | "potentially_dangerous" | "high_risk" | "insufficient_evidence",
+  "riskLevel": "safe" | "low_risk" | "suspicious" | "potentially_dangerous" | "high_risk" | "critical" | "insufficient_evidence",
   "confidence": number between 0.1 and 0.95,
   "summary": string,
   "signals": [string],
