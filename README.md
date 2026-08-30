@@ -47,7 +47,9 @@ Trust Vision follows strict safety principles:
 🗂️ Analysis History
 Previous analyses are stored in SQLite and can be viewed through the application history interface.
 
-🏗️Project Architecture
+# 🏗️ TrustVision — Project Architecture
+
+```text
 trustVision/
 │
 ├── backend/
@@ -116,3 +118,4 @@ trustVision/
 ├── package.json
 ├── README.md
 └── server.py
+```
